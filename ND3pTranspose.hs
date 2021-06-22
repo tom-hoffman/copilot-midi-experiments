@@ -1,12 +1,31 @@
 {-# LANGUAGE BinaryLiterals#-}
 {-# LANGUAGE RebindableSyntax #-}
 
---module ND3pTranspose where
-
 import Copilot.Arduino.Uno
 import qualified Copilot.Arduino.Library.Serial as Serial
 
 import Word8IO
+
+{- 
+This is for an Arduino with a SparkFun MIDI board with buttons installed.
+
+  * left  button on pin4.
+  * right button on pin2.
+
+When the right button is pressed, the Arduino will trigger a MIDI note to 
+each pad in turn.  The ND3p should (if set correctly) output the requested 
+note.  The application will read the note played, and return a MIDI CC that
+will shift the note up 1 step.  
+
+* wait for the button.
+* send a play, noting which pad you're expecting.
+* when a note arrives from that pad,
+* send a CC with the note value + 1.
+* go to the next pad.
+
+
+The left button follows the same process to shift the note down 1 step.
+-}
 
 simulationMode :: Bool
 simulationMode = True
@@ -19,9 +38,6 @@ midiCC :: Behavior Word8
 midiCC = 0b10110000
 
 -- Utility functions
-
-counter :: Stream Word8
-counter = [1] ++ (1 + counter)
 
 getSerial :: Bool -> Sketch (Behavior Word8)
 -- Checks simulationMode and then returns simulated or real data.

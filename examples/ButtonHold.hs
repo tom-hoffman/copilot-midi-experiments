@@ -16,11 +16,11 @@ updateLedState :: Behavior Bool -> Behavior Bool -> Behavior Bool
 -- This function looks at the current and previous states of the button 
 -- to determine if it has changed from false to true.  If so, it toggles
 -- the state of the LED.
-updateLedState button led = updatedLedState where
+updateLedState button ledState = updatedLedState where
     pressed = (button == constant True) && 
               (previous button == constant False)
-    new = if pressed then not led
-                     else led
+    new = if pressed then not ledState
+                     else ledState
     updatedLedState = [False] ++ new
 
 main :: IO ()

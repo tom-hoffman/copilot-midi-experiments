@@ -1,5 +1,7 @@
 {-# LANGUAGE RebindableSyntax #-}
 
+module ButtonHold where
+
 import Copilot.Arduino.Uno
 
 {- 

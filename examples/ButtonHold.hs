@@ -12,21 +12,19 @@ This works like a record button (that's what it is for).
 Press once to activate, press again to deactivate.
 -}
 
-updateLedState :: Behavior Bool -> Behavior Bool -> Behavior Bool
+ledState :: Behavior Bool -> Behavior Bool
 -- This function looks at the current and previous states of the button 
 -- to determine if it has changed from false to true.  If so, it toggles
 -- the state of the LED.
-updateLedState button ledState = updatedLedState where
+ledState button = v where
     pressed = (button == constant True) && 
               (previous button == constant False)
-    new = if pressed then not ledState
-                     else ledState
-    updatedLedState = [False] ++ new
+    new = if pressed then not v else v
+    v = [False] ++ new
 
 main :: IO ()
 main = arduino $ do
     pullup pin4
     buttonState <- input' pin4 [False, True,  True, True, False, False,
                                 False, False, True, True, False, False]
-    let ledState = updateLedState buttonState ledState
-    led =: ledState
+    led =: ledState buttonState

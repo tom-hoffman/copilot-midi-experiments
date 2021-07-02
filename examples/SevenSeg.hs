@@ -30,8 +30,3 @@ test = [array [True, False, True, True, True, True, True, True]] ++ test
 main :: IO ()
 main = arduino $ do
     setDisplay test
-
-arr :: Stream (Array 2 Bool)
-arr = [ array [True, False]
-      , array [True, True]
-      , array [False, False]] ++ arr

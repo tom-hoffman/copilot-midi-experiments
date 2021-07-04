@@ -1,32 +1,28 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE RebindableSyntax #-}
 
 import Copilot.Arduino.Uno
 
-segA =  pin10
-segB =  pin9
-segC =  pin7
-segD =  pin6
-segE =  pin5
-segF =  pin11
-segG =  pin12
-segDP = pin8
+-- Pins corresponding to segments A - G and DP, in order.
+segmentConfig = [(pin10 =:),
+                 (pin9  =:),
+                 (pin7  =:),
+                 (pin6  =:),
+                 (pin5  =:),
+                 (pin11 =:),
+                 (pin12 =:),
+                 (pin8  =:)]
 
-setDisplay :: Stream (Array 8 Bool) -> Sketch ()
-setDisplay pins = do
-    segA =: pins .!! constant 0
-    segB =: pins .!! constant 1
-    segC =: pins .!! constant 2
-    segD =: pins .!! constant 3
-    segE=: pins .!! constant 4
-    segF =: pins .!! constant 5
-    segG=: pins .!! constant 6
-    segDP =: pins .!! constant 7
+segments = zip segmentConfig [0 .. 7]
 
 test :: Stream (Array 8 Bool)
 test = [array [True, False, True, True, True, True, True, True]] ++ test
 
+setDisplay :: Stream (Array 8 Bool) -> Sketch ()
+setDisplay segmentArray =
+    mapM_ (\(f, n) -> f (segmentArray .!! constant n)) segments
+
 main :: IO ()
 main = arduino $ do
     setDisplay test
+    
